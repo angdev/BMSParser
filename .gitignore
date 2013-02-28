@@ -1,3 +1,10 @@
 ﻿*.~
 *.opensdf
 *.sdf
+*.vspx
+*.psess
+*.user
+
+Debug/
+Release/
+ipch/
