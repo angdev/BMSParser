@@ -46,6 +46,21 @@ struct BMSInfo
 
 class BMSParser
 {
+    enum HeaderKey {
+        kHeaderInvalid = -1,
+        kHeaderPlayer = 0,
+        kHeaderTitle,
+        kHeaderArtist,
+        kHeaderGenre,
+        kHeaderBPM,
+        kHeaderPlayLevel,
+        kHeaderRank,
+        kHeaderTotal,
+        kHeaderVolWav,
+        kHeaderStageFile,
+        kHeaderVideoFile
+    };
+
 public:
 
 	/**
@@ -103,6 +118,9 @@ private:
 	void loadWavFilesPath();
 
 private:
+    int getHeaderIndex(const std::wstring& str);
+
+private:
 	/** BMS 파일 핸들 */
 	std::wifstream bmsFile_;
 	std::string bmsFilePath_;
@@ -133,9 +151,9 @@ namespace ParserHelper {
 	\return
 	tellg()로부터 str()의 끝의 문자열.
 	*/
-	static std::wstring GetRemainingWideString(std::wstringstream& wss);
-	static void SplitWideString(const std::wstring &ws, const wchar_t* delim, std::vector<std::wstring> &elems);
-    static std::string GetStringFromWideString(std::wstring &ws);
+	inline static std::wstring GetRemainingWideString(std::wstringstream& wss);
+	inline static void SplitWideString(const std::wstring &ws, const wchar_t* delim, std::vector<std::wstring> &elems);
+    inline static std::string GetStringFromWideString(std::wstring &ws);
     
 	template<class FROM, class TO>
 	static bool NumberStringConvert(const FROM& from, TO& toOut)
@@ -157,7 +175,7 @@ namespace ParserHelper {
     /** 
     std::string형을 대문자로 바꿔준다
     */
-    static void UpperWideString(std::wstring &str) {
+    inline static void UpperWideString(std::wstring &str) {
         std::transform(str.begin(), str.end(), str.begin(), ::toupper);
     }
 };

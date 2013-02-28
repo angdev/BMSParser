@@ -71,7 +71,7 @@ void BMSParser::parseHeader()
 	if(fileOpened_ != true)
 		return;
 
-
+    std::wstringstream wss;
 	std::wstring currentLine = L"";
 	std::wstring prefix = L"";
 	std::wstring param = L"";
@@ -90,88 +90,78 @@ void BMSParser::parseHeader()
     bmsFile_.read(buffer, bufLength);
     bmsFile_.close();
 
+    //header 섹션이 시작되면 활성화
+    bool isHeaderBegun = false;
+    int headerIndex = -1;
+    int invalidNumber = 0;
+
     wchar_t* currentPos = buffer;
     while(currentPos != NULL) {
         
         currentLine.clear();
         prefix.clear();
-        
+        wss.clear();
+
         currentPos = GetLineFromBuffer(buffer, bufLength, currentPos, currentLine);
-        
-        std::wstringstream lStringStream(currentLine);
-		if(currentLine.length() != 0)
-        {
-			lStringStream >> prefix;
+        wss.str(currentLine);
+
+		if(currentLine.length() != 0) {
+			wss >> prefix;
         }
-		else
+		else {
 			continue;
-		
-		UpperWideString(prefix);
+        }
 
-		//#PLAYER [1~4], 1:Player 1, 2:Player 1 + Player 2, 3: 1P DP, 4: ==2?
-		if(prefix.compare(L"#PLAYER") == 0)
-		{
-			lStringStream >> param;
-			bmsInfo->player = atoi(GetStringFromWideString(param).c_str());
-		}
-		//#TITLE [string]
-		else if(prefix.compare(L"#TITLE") == 0)
-		{
-			bmsInfo->title = GetRemainingWideString(lStringStream);
-		}
-		//#ARTIST [string]
-		else if(prefix.compare(L"#ARTIST") == 0)
-		{
-			bmsInfo->artist = GetRemainingWideString(lStringStream);
-		}
-		//#GENRE [string]
-		else if(prefix.compare(L"#GENRE") == 0)
-		{
-			bmsInfo->genre = GetRemainingWideString(lStringStream);
-		}
-		//#BPM [float]
-		else if(prefix.compare(L"#BPM") == 0)
-		{
-			lStringStream >> param;
-			bmsInfo->bpm = (float)(atof(GetStringFromWideString(param).c_str()));
-		}
-		//#PLAYLEVEL [int], difficulty
-		else if(prefix.compare(L"#PLAYLEVEL") == 0)
-		{
-			lStringStream >> param;
-			bmsInfo->playlevel = atoi(GetStringFromWideString(param).c_str());
-		}
-		//#RANK [int]
-		else if(prefix.compare(L"#RANK") == 0)
-		{
-			lStringStream >> param;
-			bmsInfo->rank = atoi(GetStringFromWideString(param).c_str());
-		}
-		//#TOTAL [int], number of notes
-		else if(prefix.compare(L"#TOTAL") == 0)
-		{
-			lStringStream >> param;
-			bmsInfo->total = atoi(GetStringFromWideString(param).c_str());
-		}
-		//#VOLWAV [int], std 100, sound volume.
-		else if(prefix.compare(L"#VOLWAV") == 0)
-		{
-			lStringStream >> param;
-			bmsInfo->volwav = atoi(GetStringFromWideString(param).c_str());
-		}
-		//#STAGEFILE [string(filepath)], print out this file while loading.
- 		else if(prefix.compare(L"#STAGEFILE") == 0)
-		{
-			bmsInfo->stagefile = GetRemainingWideString(lStringStream);
-		}
-		//#VIDEOFILE [string(filepath)], play this video while playing.
-		else if(prefix.compare(L"#VIDEOFILE") == 0)
-		{
-			bmsInfo->videofile = GetRemainingWideString(lStringStream);
-		}
-        //헤더들은 붙어있다고 가정하고 10회 이상 출현하지 않으면 파싱 종료
-        else {
+        UpperWideString(prefix);
+        headerIndex = getHeaderIndex(prefix);
+        if(headerIndex > -1) {
+            isHeaderBegun = true;
+        }
+        
+        //헤더 섹션을 벗어났다고 판단
+        if(invalidNumber > 15) {
+            break;
+        }
 
+        switch(headerIndex) {
+        case kHeaderInvalid:
+            if(isHeaderBegun) {
+                ++invalidNumber;
+            }
+            break;
+        case kHeaderPlayer:
+            wss >> bmsInfo->player;
+            break;
+        case kHeaderTitle:
+            bmsInfo->title = GetRemainingWideString(wss);
+            break;
+        case kHeaderArtist:
+            bmsInfo->artist = GetRemainingWideString(wss);
+            break;
+        case kHeaderGenre:
+            bmsInfo->genre = GetRemainingWideString(wss);
+            break;
+        case kHeaderBPM:
+            wss >> bmsInfo->bpm;
+            break;
+        case kHeaderPlayLevel:
+            wss >> bmsInfo->playlevel;
+            break;
+        case kHeaderRank:
+            wss >> bmsInfo->rank;
+            break;
+        case kHeaderTotal:
+            wss >> bmsInfo->total;
+            break;
+        case kHeaderVolWav:
+            wss >> bmsInfo->volwav;
+            break;
+        case kHeaderStageFile:
+            wss >> bmsInfo->stagefile;
+            break;
+        case kHeaderVideoFile:
+            wss >> bmsInfo->videofile;
+            break;
         }
 	}
 	
@@ -279,6 +269,35 @@ void BMSParser::loadWavFilesPath()
 	{
 		std::wcout << iter->first << L" : " << iter->second << std::endl;
 	}
+}
+
+int BMSParser::getHeaderIndex(const std::wstring& str) {
+    static const wchar_t *headerKey[] = {
+        L"#PLAYER",
+        L"#TITLE",
+        L"#ARTIST",
+        L"#GENRE",
+        L"#BPM",
+        L"#PLAYLEVEL",
+        L"#RANK",
+        L"#TOTAL",
+        L"#VOLWAV",
+        L"#STAGEFILE",
+        L"#VIDEOFILE"
+    };
+    
+    int arrLength = sizeof(headerKey) / sizeof(headerKey[0]);
+    const wchar_t **end = headerKey + arrLength;
+    const wchar_t **found = std::find_if(headerKey, end, [&](const wchar_t *s) {
+        if(str.compare(s) == 0) {
+            return true;
+        }
+        return false;
+    });
+    if(found != end) {
+        return std::distance(headerKey, found);
+    }
+    return -1;
 }
 
 void ParserHelper::SplitWideString(const std::wstring &ws, const wchar_t* delim, std::vector<std::wstring> &elems)

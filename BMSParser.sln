@@ -5,12 +5,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BMSParser", "BMSParser\BMSP
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Fast|Win32 = Debug Fast|Win32
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C80DC520-CC2F-4F28-B9D5-86BE3C1F32B0}.Debug|Win32.ActiveCfg = Release|Win32
-		{C80DC520-CC2F-4F28-B9D5-86BE3C1F32B0}.Debug|Win32.Build.0 = Release|Win32
+		{C80DC520-CC2F-4F28-B9D5-86BE3C1F32B0}.Debug Fast|Win32.ActiveCfg = Debug Fast|Win32
+		{C80DC520-CC2F-4F28-B9D5-86BE3C1F32B0}.Debug Fast|Win32.Build.0 = Debug Fast|Win32
+		{C80DC520-CC2F-4F28-B9D5-86BE3C1F32B0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C80DC520-CC2F-4F28-B9D5-86BE3C1F32B0}.Debug|Win32.Build.0 = Debug|Win32
 		{C80DC520-CC2F-4F28-B9D5-86BE3C1F32B0}.Release|Win32.ActiveCfg = Release|Win32
 		{C80DC520-CC2F-4F28-B9D5-86BE3C1F32B0}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
