@@ -1,3 +1,4 @@
+ï»¿// Å¬nicode please
 /*
 * Project RBMS : Rhythm game using Be Music Script
 * This file is a part of project RBMS.
@@ -14,10 +15,10 @@ struct NoteInfo
 	int ChannelNumber;
 	int KeyNumber;
 	std::wstring WavNumber;
-	// ÇØ´ç ¸¶µğ¿¡¼­ÀÇ À§Ä¡¸¦ ³ªÅ¸³»´Â º¯¼ö
+	// í•´ë‹¹ ë§ˆë””ì—ì„œì˜ ìœ„ì¹˜ë¥¼ ë‚˜íƒ€ë‚´ëŠ” ë³€ìˆ˜
 	int Position;
 	int TotalNumber;
-	//ex) TotalNumber = 16, Position = 3ÀÌ¸é ÇØ´ç ¸¶µğ¿¡¼­ 3/16 À§Ä¡¿¡ ÀÖ´Â °Í.
+	//ex) TotalNumber = 16, Position = 3ì´ë©´ í•´ë‹¹ ë§ˆë””ì—ì„œ 3/16 ìœ„ì¹˜ì— ìˆëŠ” ê²ƒ.
 };
 
 class NoteObject
@@ -31,7 +32,7 @@ private:
 typedef std::vector<NoteObject> Notes;
 
 
-//Temp. ÄÁÅ×ÀÌ³Ê¸¦ ¾µ°ÇÁö °í¹Î Áß. ÀÏ´Ü ÆÄ½ÌÇØ¼­ Á¤º¸¸¦ ´Ù °¡Áö°í ÀÖ´Â°É·Î ÇÏÀÚ. ÀÌ ¾Æ·¡´Â ¾ÆÁ÷ »ç¿ëµÇÁö ¾Ê´Â´Ù.
+//Temp. ì»¨í…Œì´ë„ˆë¥¼ ì“¸ê±´ì§€ ê³ ë¯¼ ì¤‘. ì¼ë‹¨ íŒŒì‹±í•´ì„œ ì •ë³´ë¥¼ ë‹¤ ê°€ì§€ê³  ìˆëŠ”ê±¸ë¡œ í•˜ì. ì´ ì•„ë˜ëŠ” ì•„ì§ ì‚¬ìš©ë˜ì§€ ì•ŠëŠ”ë‹¤.
 class NoteContainer
 {
 public:

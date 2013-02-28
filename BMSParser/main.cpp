@@ -1,3 +1,4 @@
+﻿// Ŭnicode please
 /*
  * Project RBMS : Rhythm game using Be Music Script
  * This file is a part of project RBMS.

@@ -1,3 +1,4 @@
+ï»¿// Å¬nicode please
 /*
 * Project RBMS : Rhythm game using Be Music Script
 * This file is a part of project RBMS.
@@ -20,7 +21,7 @@ void BMSInfo::Clear()
 
 
 /* BMSParser Class Functions */
-BMSParser::BMSParser() : processed_(false), fileOpened_(false), bmsInfo_(0), noteContainer_(0), wavFilesPath_(0)
+BMSParser::BMSParser() : processed_(false), fileOpened_(false), bmsInfo_(0), noteContainer_(0)
 {
 
 }
@@ -29,22 +30,16 @@ bool BMSParser::OpenBMSFile(const std::string& _filePath)
 {
 	if(processed_ == true)
 	{
-		//ÀÌÀü ÀÚ·á Å¬¸®¾îÇØ¾ß ÇÔ.
+		//ì´ì „ ìë£Œ í´ë¦¬ì–´í•´ì•¼ í•¨.
 		bmsInfo_->Clear();
-		
-		if(noteContainer_ != 0)
-			noteContainer_->clear();
-
-		if(wavFilesPath_ != 0)
-			wavFilesPath_->clear();
+		noteContainer_.clear();
+		wavFilesPath_.clear();
 	}
 
 	try
 	{
 		bmsFile_.open(_filePath.c_str(), std::wifstream::in);
 		bmsInfo_ = new BMSInfo();
-		noteContainer_ = new Notes();
-		wavFilesPath_ = new std::map<std::wstring, std::wstring>();
 	}
 	catch(std::exception e)
 	{
@@ -52,7 +47,7 @@ bool BMSParser::OpenBMSFile(const std::string& _filePath)
 		return false;
 	}
 
-	//»õ·Î ¿¬ °ÍÀ¸·Î »ı°¢. (clear ÇÔ¼ö µµÀÔÇØ¾ßÇÔ.)
+	//ìƒˆë¡œ ì—° ê²ƒìœ¼ë¡œ ìƒê°. (clear í•¨ìˆ˜ ë„ì…í•´ì•¼í•¨.)
 	fileOpened_ = true;
 	processed_ = false;
 	bmsFilePath_ = _filePath;
@@ -64,7 +59,7 @@ BMSInfo* BMSParser::GetpBMSInfo()
 {
 	if(!processed_)
 	{
-		//TODO: ÀÏ´Ü parseHeaderºÎÅÍ.
+		//TODO: ì¼ë‹¨ parseHeaderë¶€í„°.
 		parseHeader();
 	}
 
@@ -76,10 +71,11 @@ void BMSParser::parseHeader()
 	if(fileOpened_ != true)
 		return;
 
-	std::wstring lCurrentLine = L"";
-	std::wstring lPrefix = L"";
-	std::wstring lParam = L"";
-	BMSInfo* lBmsInfo = bmsInfo_;
+
+	std::wstring currentLine = L"";
+	std::wstring prefix = L"";
+	std::wstring param = L"";
+	BMSInfo* bmsInfo = bmsInfo_;
 
     //get file length
     bmsFile_.seekg(0, std::ios::end);
@@ -89,7 +85,7 @@ void BMSParser::parseHeader()
 	bmsFile_.seekg(0, std::ios::beg);
 
     //file -> buffer
-    //ÀÏ´Ü ÇÑ ¹ø¿¡ ÇÒ´çÇØº¸ÀÚ.
+    //ì¼ë‹¨ í•œ ë²ˆì— í• ë‹¹í•´ë³´ì.
     wchar_t *buffer = new wchar_t[bufLength];
     bmsFile_.read(buffer, bufLength);
     bmsFile_.close();
@@ -97,83 +93,83 @@ void BMSParser::parseHeader()
     wchar_t* currentPos = buffer;
     while(currentPos != NULL) {
         
-        lCurrentLine.clear();
-        lPrefix.clear();
+        currentLine.clear();
+        prefix.clear();
         
-        currentPos = GetLineFromBuffer(buffer, bufLength, currentPos, lCurrentLine);
+        currentPos = GetLineFromBuffer(buffer, bufLength, currentPos, currentLine);
         
-        std::wstringstream lStringStream(lCurrentLine);
-		if(lCurrentLine.length() != 0)
+        std::wstringstream lStringStream(currentLine);
+		if(currentLine.length() != 0)
         {
-			lStringStream >> lPrefix;
+			lStringStream >> prefix;
         }
 		else
 			continue;
 		
-		UpperWString(lPrefix);
+		UpperWideString(prefix);
 
 		//#PLAYER [1~4], 1:Player 1, 2:Player 1 + Player 2, 3: 1P DP, 4: ==2?
-		if(lPrefix.compare(L"#PLAYER") == 0)
+		if(prefix.compare(L"#PLAYER") == 0)
 		{
-			lStringStream >> lParam;
-			lBmsInfo->player = atoi(GetStringFromWString(lParam).c_str());
+			lStringStream >> param;
+			bmsInfo->player = atoi(GetStringFromWideString(param).c_str());
 		}
 		//#TITLE [string]
-		else if(lPrefix.compare(L"#TITLE") == 0)
+		else if(prefix.compare(L"#TITLE") == 0)
 		{
-			lBmsInfo->title = GetRemainingWstrFromSS(lStringStream);
+			bmsInfo->title = GetRemainingWideString(lStringStream);
 		}
 		//#ARTIST [string]
-		else if(lPrefix.compare(L"#ARTIST") == 0)
+		else if(prefix.compare(L"#ARTIST") == 0)
 		{
-			lBmsInfo->artist = GetRemainingWstrFromSS(lStringStream);
+			bmsInfo->artist = GetRemainingWideString(lStringStream);
 		}
 		//#GENRE [string]
-		else if(lPrefix.compare(L"#GENRE") == 0)
+		else if(prefix.compare(L"#GENRE") == 0)
 		{
-			lBmsInfo->genre = GetRemainingWstrFromSS(lStringStream);
+			bmsInfo->genre = GetRemainingWideString(lStringStream);
 		}
 		//#BPM [float]
-		else if(lPrefix.compare(L"#BPM") == 0)
+		else if(prefix.compare(L"#BPM") == 0)
 		{
-			lStringStream >> lParam;
-			lBmsInfo->bpm = (float)(atof(GetStringFromWString(lParam).c_str()));
+			lStringStream >> param;
+			bmsInfo->bpm = (float)(atof(GetStringFromWideString(param).c_str()));
 		}
 		//#PLAYLEVEL [int], difficulty
-		else if(lPrefix.compare(L"#PLAYLEVEL") == 0)
+		else if(prefix.compare(L"#PLAYLEVEL") == 0)
 		{
-			lStringStream >> lParam;
-			lBmsInfo->playlevel = atoi(GetStringFromWString(lParam).c_str());
+			lStringStream >> param;
+			bmsInfo->playlevel = atoi(GetStringFromWideString(param).c_str());
 		}
 		//#RANK [int]
-		else if(lPrefix.compare(L"#RANK") == 0)
+		else if(prefix.compare(L"#RANK") == 0)
 		{
-			lStringStream >> lParam;
-			lBmsInfo->rank = atoi(GetStringFromWString(lParam).c_str());
+			lStringStream >> param;
+			bmsInfo->rank = atoi(GetStringFromWideString(param).c_str());
 		}
 		//#TOTAL [int], number of notes
-		else if(lPrefix.compare(L"#TOTAL") == 0)
+		else if(prefix.compare(L"#TOTAL") == 0)
 		{
-			lStringStream >> lParam;
-			lBmsInfo->total = atoi(GetStringFromWString(lParam).c_str());
+			lStringStream >> param;
+			bmsInfo->total = atoi(GetStringFromWideString(param).c_str());
 		}
 		//#VOLWAV [int], std 100, sound volume.
-		else if(lPrefix.compare(L"#VOLWAV") == 0)
+		else if(prefix.compare(L"#VOLWAV") == 0)
 		{
-			lStringStream >> lParam;
-			lBmsInfo->volwav = atoi(GetStringFromWString(lParam).c_str());
+			lStringStream >> param;
+			bmsInfo->volwav = atoi(GetStringFromWideString(param).c_str());
 		}
 		//#STAGEFILE [string(filepath)], print out this file while loading.
- 		else if(lPrefix.compare(L"#STAGEFILE") == 0)
+ 		else if(prefix.compare(L"#STAGEFILE") == 0)
 		{
-			lBmsInfo->stagefile = GetRemainingWstrFromSS(lStringStream);
+			bmsInfo->stagefile = GetRemainingWideString(lStringStream);
 		}
 		//#VIDEOFILE [string(filepath)], play this video while playing.
-		else if(lPrefix.compare(L"#VIDEOFILE") == 0)
+		else if(prefix.compare(L"#VIDEOFILE") == 0)
 		{
-			lBmsInfo->videofile = GetRemainingWstrFromSS(lStringStream);
+			bmsInfo->videofile = GetRemainingWideString(lStringStream);
 		}
-        //Çì´õµéÀº ºÙ¾îÀÖ´Ù°í °¡Á¤ÇÏ°í 10È¸ ÀÌ»ó ÃâÇöÇÏÁö ¾ÊÀ¸¸é ÆÄ½Ì Á¾·á
+        //í—¤ë”ë“¤ì€ ë¶™ì–´ìˆë‹¤ê³  ê°€ì •í•˜ê³  10íšŒ ì´ìƒ ì¶œí˜„í•˜ì§€ ì•Šìœ¼ë©´ íŒŒì‹± ì¢…ë£Œ
         else {
 
         }
@@ -210,27 +206,27 @@ void BMSParser::parseDataSection()
 			continue;
 		}
 
-		//dataPrefix¿¡´Â ¸¶µğ Á¤º¸°¡ µé¾îÀÖ´Ù.
-		//ÀÌ ¶óÀÎÀº µ¥ÀÌÅÍ ¼½¼ÇÀÌ´Ù.
+		//dataPrefixì—ëŠ” ë§ˆë”” ì •ë³´ê°€ ë“¤ì–´ìˆë‹¤.
+		//ì´ ë¼ì¸ì€ ë°ì´í„° ì„¹ì…˜ì´ë‹¤.
 		std::vector<std::wstring> dataInfo;
 
-		SplitWString(lCurrentLine, L":", dataInfo);
-		//dataInfo[0] :	¸¶µğ, Ã¤³Î ¹øÈ£
-		//dataInfo[1] : ¸¶µğ Á¤º¸
+		SplitWideString(lCurrentLine, L":", dataInfo);
+		//dataInfo[0] :	ë§ˆë””, ì±„ë„ ë²ˆí˜¸
+		//dataInfo[1] : ë§ˆë”” ì •ë³´
 		//std::wcout << dataInfo[0] << L" - " << dataInfo[1] << std::endl;
 	
-		//¿©±â¼­ºÎÅÍ µ¥ÀÌÅÍ¸¦ ´ã±â ½ÃÀÛ
+		//ì—¬ê¸°ì„œë¶€í„° ë°ì´í„°ë¥¼ ë‹´ê¸° ì‹œì‘
 		NoteInfo commonInfo;
 
-		//¼º´É »ı°¢Àº ÇÏÁö ¾Ê´Â´Ù.
+		//ì„±ëŠ¥ ìƒê°ì€ í•˜ì§€ ì•ŠëŠ”ë‹¤.
         std::wstring substrTemp = dataInfo[0].substr(1, 3);
-		commonInfo.NodeNumber = atoi(GetStringFromWString(substrTemp).c_str());
+		commonInfo.NodeNumber = atoi(GetStringFromWideString(substrTemp).c_str());
         
         substrTemp = dataInfo[0].substr(4, 1);
-		commonInfo.ChannelNumber = atoi(GetStringFromWString(substrTemp).c_str());
+		commonInfo.ChannelNumber = atoi(GetStringFromWideString(substrTemp).c_str());
         
         substrTemp = dataInfo[0].substr(5, 1);
-		commonInfo.KeyNumber = atoi(GetStringFromWString(substrTemp).c_str());
+		commonInfo.KeyNumber = atoi(GetStringFromWideString(substrTemp).c_str());
 
 		int nodeSize = dataInfo[1].size() / 2;
 		commonInfo.TotalNumber = nodeSize;
@@ -242,7 +238,7 @@ void BMSParser::parseDataSection()
 			note.Info.Position = i;
 			note.Info.WavNumber = dataInfo[1].substr(i*2, 2);
 
-			noteContainer_->push_back(note);
+			noteContainer_.push_back(note);
 		}
 		
 	}
@@ -275,17 +271,17 @@ void BMSParser::loadWavFilesPath()
 
 		if(lPrefix.substr(0, 4) == L"#WAV")
 		{
-			wavFilesPath_->insert(WavPath(lPrefix.substr(4, 2), lFileName));
+			wavFilesPath_.insert(WavPath(lPrefix.substr(4, 2), lFileName));
 		}
 	}
 
-	for(std::map<std::wstring, std::wstring>::iterator iter = wavFilesPath_->begin(); iter != wavFilesPath_->end(); iter++)
+	for(std::map<std::wstring, std::wstring>::iterator iter = wavFilesPath_.begin(); iter != wavFilesPath_.end(); iter++)
 	{
 		std::wcout << iter->first << L" : " << iter->second << std::endl;
 	}
 }
 
-void ParserHelper::SplitWString(const std::wstring &ws, const wchar_t* delim, std::vector<std::wstring> &elems)
+void ParserHelper::SplitWideString(const std::wstring &ws, const wchar_t* delim, std::vector<std::wstring> &elems)
 {
 	std::wstringstream wss(ws);
 	std::wstring item;
@@ -295,12 +291,12 @@ void ParserHelper::SplitWString(const std::wstring &ws, const wchar_t* delim, st
 }
 
 
-std::wstring ParserHelper::GetRemainingWstrFromSS(std::wstringstream& wss)
+std::wstring ParserHelper::GetRemainingWideString(std::wstringstream& wss)
 {
 	return wss.str().substr(wss.tellg());
 }
     
-std::string ParserHelper::GetStringFromWString(std::wstring &ws)
+std::string ParserHelper::GetStringFromWideString(std::wstring &ws)
 {
     std::string str(ws.begin(), ws.end());
     str.assign(ws.begin(), ws.end());
@@ -310,7 +306,7 @@ std::string ParserHelper::GetStringFromWString(std::wstring &ws)
 
 wchar_t *ParserHelper::GetLineFromBuffer(wchar_t *buffer, int length, wchar_t* begin, std::wstring &str) {
     wchar_t *end = buffer + length;
-    //ÁÙ¹Ù²Ş ¹®ÀÚ À§Ä¡
+    //ì¤„ë°”ê¿ˆ ë¬¸ì ìœ„ì¹˜
     wchar_t *lfPos = std::find(begin, end, '\n');
 
     if(lfPos != end) {

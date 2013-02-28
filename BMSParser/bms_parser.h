@@ -1,3 +1,4 @@
+ï»¿// Å¬nicode please
 /*
 * Project RBMS : Rhythm game using Be Music Script
 * This file is a part of project RBMS.
@@ -7,16 +8,13 @@
 #ifndef __BMS_PARSER_H__
 #define __BMS_PARSER_H__
 
+#include "bms_object.h"
+
 typedef std::pair<std::wstring, std::wstring> WavPath;
 
-struct NoteObject;
-typedef std::vector<NoteObject> Notes;
-
-#define _T(x) L##x
-
 /**
-BMS Header¿¡ ´ëÇÑ Á¤º¸¸¦ ´ã´Â´Ù.
-±¸Á¶Ã¼ÀÇ ¸â¹ö º¯¼ö¸íÀº Çì´õÀÇ Áö½ÃÀÚ¿Í °°´Ù.
+BMS Headerì— ëŒ€í•œ ì •ë³´ë¥¼ ë‹´ëŠ”ë‹¤.
+êµ¬ì¡°ì²´ì˜ ë©¤ë²„ ë³€ìˆ˜ëª…ì€ í—¤ë”ì˜ ì§€ì‹œìì™€ ê°™ë‹¤.
 */
 struct BMSInfo
 {
@@ -58,12 +56,12 @@ public:
 
 	/**
 	\remarks
-	BMS, BME ÆÄÀÏ µîÀ» ¿©´Â ÇÔ¼öÀÌ´Ù.
+	BMS, BME íŒŒì¼ ë“±ì„ ì—¬ëŠ” í•¨ìˆ˜ì´ë‹¤.
 	\return
-	ÆÄÀÏ ¿­±â¿¡ ¼º°øÇÏ¸é true, ±×·¸Áö ¾ÊÀ¸¸é false¸¦ ¹İÈ¯ÇÑ´Ù.
+	íŒŒì¼ ì—´ê¸°ì— ì„±ê³µí•˜ë©´ true, ê·¸ë ‡ì§€ ì•Šìœ¼ë©´ falseë¥¼ ë°˜í™˜í•œë‹¤.
 	*/
 	bool OpenBMSFile(
-		const std::string& filePath_	///<BMS ÆÄÀÏ °æ·Î
+		const std::string& filePath_	///<BMS íŒŒì¼ ê²½ë¡œ
 		);
 
 	std::string GetCurrentFilePath() const
@@ -78,18 +76,18 @@ public:
 
 	/**
 	\remarks
-	BMS ÆÄÀÏ Á¤º¸¸¦ ÁÖ´Â ÇÔ¼öÀÌ´Ù. BMSInfo ±¸Á¶Ã¼ ÂüÁ¶.
+	BMS íŒŒì¼ ì •ë³´ë¥¼ ì£¼ëŠ” í•¨ìˆ˜ì´ë‹¤. BMSInfo êµ¬ì¡°ì²´ ì°¸ì¡°.
 	\return
-	BMSInfo Æ÷ÀÎÅÍ
+	BMSInfo í¬ì¸í„°
 	*/
 	BMSInfo* GetpBMSInfo();
 
 	/**
 	\remarks
-	BMS Å°À½ À§Ä¡¸¦ ºÒ·¯¿À´Â ÇÔ¼öÀÌ´Ù. (ÆÄÀÏÀ» ºÒ·¯¿À´Â °ÍÀÌ ¾Æ´Ï´Ù!)
-	Å¬·¡½º º¯¼ö°¡ °¡Áö°í ÀÖ´Â´Ù.
+	BMS í‚¤ìŒ ìœ„ì¹˜ë¥¼ ë¶ˆëŸ¬ì˜¤ëŠ” í•¨ìˆ˜ì´ë‹¤. (íŒŒì¼ì„ ë¶ˆëŸ¬ì˜¤ëŠ” ê²ƒì´ ì•„ë‹ˆë‹¤!)
+	í´ë˜ìŠ¤ ë³€ìˆ˜ê°€ ê°€ì§€ê³  ìˆëŠ”ë‹¤.
 	\return
-	¾øÀ½.
+	ì—†ìŒ.
 	void LoadKeySound();
     */
 
@@ -105,38 +103,39 @@ private:
 	void loadWavFilesPath();
 
 private:
-	/** BMS ÆÄÀÏ ÇÚµé */
+	/** BMS íŒŒì¼ í•¸ë“¤ */
 	std::wifstream bmsFile_;
 	std::string bmsFilePath_;
-	//TODO : ÆÄÀÏÁÙ Á¤·ÄÇÒ ÇÊ¿ä°¡ ÀÖÀ½.
+	//TODO : íŒŒì¼ì¤„ ì •ë ¬í•  í•„ìš”ê°€ ìˆìŒ.
 
 	/** BMS Infomation */
 	BMSInfo *bmsInfo_;
-	std::map<std::wstring, std::wstring> *wavFilesPath_;
-	Notes *noteContainer_;
+	std::map<std::wstring, std::wstring> wavFilesPath_;
+	Notes noteContainer_;
 	
 
 	/** Command List */
 
 
-	/** Ã³¸® µÇ¾ú´ÂÁö È®ÀÎ */
+	/** ì²˜ë¦¬ ë˜ì—ˆëŠ”ì§€ í™•ì¸ */
 	bool processed_;
-	/** ÆÄÀÏÀÌ ¿­·È´ÂÁö È®ÀÎ */
+	/** íŒŒì¼ì´ ì—´ë ¸ëŠ”ì§€ í™•ì¸ */
 	bool fileOpened_;
 
 };
+
 
 namespace ParserHelper {
     /**
 	Helper Function.
 	\remarks
-	wstringstream¿¡¼­ ÇöÀç ÀÚ±â°¡ °¡¸®Å°´Â ºÎºĞºÎÅÍ ³²Àº ¹®ÀÚ¿­À» ¹İÈ¯ÇÏ´Â ÇÔ¼ö.
+	wstringstreamì—ì„œ í˜„ì¬ ìê¸°ê°€ ê°€ë¦¬í‚¤ëŠ” ë¶€ë¶„ë¶€í„° ë‚¨ì€ ë¬¸ìì—´ì„ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜.
 	\return
-	tellg()·ÎºÎÅÍ str()ÀÇ ³¡ÀÇ ¹®ÀÚ¿­.
+	tellg()ë¡œë¶€í„° str()ì˜ ëì˜ ë¬¸ìì—´.
 	*/
-	static std::wstring GetRemainingWstrFromSS(std::wstringstream& wss);
-	static void SplitWString(const std::wstring &ws, const wchar_t* delim, std::vector<std::wstring> &elems);
-    static std::string GetStringFromWString(std::wstring &ws);
+	static std::wstring GetRemainingWideString(std::wstringstream& wss);
+	static void SplitWideString(const std::wstring &ws, const wchar_t* delim, std::vector<std::wstring> &elems);
+    static std::string GetStringFromWideString(std::wstring &ws);
     
 	template<class FROM, class TO>
 	static bool NumberStringConvert(const FROM& from, TO& toOut)
@@ -156,9 +155,9 @@ namespace ParserHelper {
     static wchar_t *GetLineFromBuffer(wchar_t *buffer, int length, wchar_t* begin, std::wstring &str);
 
     /** 
-    std::stringÇüÀ» ´ë¹®ÀÚ·Î ¹Ù²ãÁØ´Ù
+    std::stringí˜•ì„ ëŒ€ë¬¸ìë¡œ ë°”ê¿”ì¤€ë‹¤
     */
-    static void UpperWString(std::wstring &str) {
+    static void UpperWideString(std::wstring &str) {
         std::transform(str.begin(), str.end(), str.begin(), ::toupper);
     }
 };

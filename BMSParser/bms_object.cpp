@@ -1,3 +1,4 @@
+﻿// Ŭnicode please
 /*
 * Project RBMS : Rhythm game using Be Music Script
 * This file is a part of project RBMS.
@@ -9,6 +10,6 @@
 
 NoteObject::NoteObject()
 {
-	//�ʱ�ȭ
+	//초기화
 	memset(&Info, 0, sizeof(NoteInfo));
 }
